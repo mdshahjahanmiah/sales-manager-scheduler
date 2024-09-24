@@ -77,3 +77,4 @@ Ran all test suites.
 - **Dockerfile for Multiple Environments**: Multi-Stage Builds, Environment-Specific configuration. 
 - **Logging and Monitoring**: Distributed Tracing, Metrics and Alerts.
 - **Robust E2E Testing**: As provided test client, I haven't focused on the testing scenarios extensively. However, it's essential to consider potential flaky test cases and implement advanced testing scenarios to ensure the system is production-ready.
+- **Connection Pooling**: Consider using database connection pooling instead of opening a new database connection unnecessarily.
