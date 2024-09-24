@@ -7,7 +7,7 @@ A tool for efficiently managing and scheduling sales team activities and appoint
 - [Setup and Tests](#setup-and-tests)
 - [Features](#features)
 - [Further Improvements](#further-improvements)
-- [Known Bugs and Limitations](#known-bugs-and-limitations)
+- [Further Improvements](#further-improvements)
 
 ## Prerequisites
 
@@ -31,9 +31,9 @@ Navigate to the project root where the docker-compose.yml file is located.
 If the build is successful, you will see logs similar to:
    ```sh
 [+] Running 2/0
- ✔ Container enpal-coding-challenge-db  Created                                                                                                                                                                                                                            0.0s 
- ✔ Container enpal-coding-challenge     Created                                                                                                                                                                                                                          0.1s 
-Attaching to enpal-coding-challenge, enpal-coding-challenge-db
+ ✔ Container enpal-coding-challenge-db      Created                                                                                                                                                                                                                            0.0s 
+ ✔ Container enpal-coding-challenge-app     Created                                                                                                                                                                                                                          0.1s 
+Attaching to enpal-coding-challenge-app, enpal-coding-challenge-db
 enpal-coding-challenge-db   | 2024-09-24 15:15:33.501 UTC [1] LOG:  database system is ready to accept connections
 enpal-coding-challenge-app  | 2024/09/24 15:15:33 INFO configuration is loaded successfully
 enpal-coding-challenge-app  | 2024/09/24 15:15:33 INFO logger is initialized successfully
@@ -72,4 +72,8 @@ Ran all test suites.
 ## Features
 - **Slot Availability**: The system focuses on returning available slots based on matching sales managers, ensuring efficient scheduling for the sales team.
 ## Further Improvements
-- **Slot Availability**: The system focuses on returning available slots based on matching sales managers, ensuring efficient scheduling for the sales team.
+- **Database Query Optimization**: We can reduce the number of database calls, ensure that the database tables have appropriate indexing to speed up queries, especially on columns used in where, order by or join clauses. If the performance bottleneck persists, an alternative and efficient approach could be using views and/or materialized view.
+- **Object-Relational Mapping (ORM) Solution**: We can also consider object-relational mapping solution instead database first approach. However, we might need to consider performance overhead specially when need to deal with complex queries.
+- **Dockerfile for Multiple Environments**: Multi-Stage Builds, Environment-Specific configuration. 
+- **Logging and Monitoring**: Distributed Tracing, Metrics and Alerts.
+- **Robust E2E Testing**: As provided test client, I haven't focused on the testing scenarios extensively. However, it's essential to consider potential flaky test cases and implement advanced testing scenarios to ensure the system is production-ready.
