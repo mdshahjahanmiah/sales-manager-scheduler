@@ -1,4 +1,4 @@
-package sales_managers
+package calender
 
 import (
 	"github.com/go-chi/chi/v5"
@@ -12,7 +12,7 @@ func MakeHandler(ms Service) http.Endpoint {
 		kithttp.ServerErrorEncoder(error.EncodeError),
 	}
 
-	getMidpointBandHandler := kithttp.NewServer(
+	postCalenderQueryHandler := kithttp.NewServer(
 		makePostCalenderQueryEndpoint(ms),
 		decodeCalenderQuery,
 		kithttp.EncodeJSONResponse,
@@ -21,7 +21,7 @@ func MakeHandler(ms Service) http.Endpoint {
 
 	r := chi.NewRouter()
 
-	r.Method("POST", "/calendar/query", getMidpointBandHandler)
+	r.Method("POST", "/calendar/query", postCalenderQueryHandler)
 
 	return http.Endpoint{Pattern: "/*", Handler: r}
 }

@@ -1,4 +1,4 @@
-package sales_managers
+package calender
 
 import (
 	"context"
@@ -7,9 +7,9 @@ import (
 
 func makePostCalenderQueryEndpoint(ms Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		queryRequest := request.(QueryRequest)
+		req := request.(queryRequest)
 
-		result, err := ms.AvailableSlots(queryRequest)
+		result, err := ms.AvailableSlots(req)
 		if err != nil {
 			return nil, err
 		}

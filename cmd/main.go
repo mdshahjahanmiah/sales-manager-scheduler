@@ -4,9 +4,9 @@ import (
 	"github.com/mdshahjahanmiah/explore-go/di"
 	eHttp "github.com/mdshahjahanmiah/explore-go/http"
 	"github.com/mdshahjahanmiah/explore-go/logging"
+	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/calender"
 	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/config"
 	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/db"
-	sales_managers "github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/sales-managers"
 	"go.uber.org/dig"
 	"log/slog"
 )
@@ -23,7 +23,7 @@ func main() {
 		return conf, nil
 	})
 
-	slog.Info("application configuration is loaded successfully")
+	slog.Info("configuration is loaded successfully")
 
 	c.Provide(func(conf config.Config) (*logging.Logger, error) {
 		logger, err := logging.NewLogger(conf.LoggerConfig)
@@ -35,7 +35,7 @@ func main() {
 		return logger, nil
 	})
 
-	slog.Info("application logger is initialized successfully")
+	slog.Info("logger is initialized successfully")
 
 	c.Provide(func(conf config.Config, logger *logging.Logger) (*db.DB, error) {
 		db, err := db.NewDB(conf.PostgresDSN, logger)
@@ -52,10 +52,10 @@ func main() {
 		}
 	})
 
-	c.Provide(func(config config.Config, logger *logging.Logger, db *db.DB) (sales_managers.Service, error) {
-		service, err := sales_managers.NewService(config, logger, db)
+	c.Provide(func(config config.Config, logger *logging.Logger, db *db.DB) (calender.Service, error) {
+		service, err := calender.NewService(config, logger, db)
 		if err != nil {
-			slog.Error("initializing sales-managers service", "err", err)
+			slog.Error("initializing calender service", "err", err)
 			return nil, err
 		}
 		return service, nil
@@ -63,7 +63,7 @@ func main() {
 
 	c.ProvideMonitoringEndpoints("endpoint")
 
-	c.Provide(sales_managers.MakeHandler, dig.Group("endpoint"))
+	c.Provide(calender.MakeHandler, dig.Group("endpoint"))
 
 	c.Invoke(func(in struct {
 		dig.In

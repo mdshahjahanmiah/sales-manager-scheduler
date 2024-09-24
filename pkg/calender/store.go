@@ -1,22 +1,15 @@
-package sales_managers
+package calender
 
 import (
 	"database/sql"
 	"fmt"
 	"github.com/lib/pq"
-	_ "github.com/lib/pq" // Postgres driver
+	_ "github.com/lib/pq"
 	"strings"
 	"time"
 )
 
-// AvailableSlot ...
-type AvailableSlot struct {
-	AvailableCount int    `json:"available_count"`
-	StartDate      string `json:"start_date"`
-}
-
-// FindMatchingSalesManagers find matching sales managers
-func FindMatchingSalesManagers(db *sql.DB, req QueryRequest) ([]int, error) {
+func matchingSalesManagers(db *sql.DB, req queryRequest) ([]int, error) {
 	query := `
         SELECT id
         FROM sales_managers
@@ -42,18 +35,16 @@ func FindMatchingSalesManagers(db *sql.DB, req QueryRequest) ([]int, error) {
 	return managerIDs, nil
 }
 
-// FindAvailableSlots find available slots in the database
-func FindAvailableSlots(db *sql.DB, req QueryRequest, managers []int) ([]AvailableSlot, error) {
-	// Convert managers slice to a string with comma-separated values
+func availableSlots(db *sql.DB, req queryRequest, managers []int) ([]AvailableSlot, error) {
 	managerIDs := strings.Trim(strings.Replace(fmt.Sprint(managers), " ", ",", -1), "[]")
 
-	// Query to get all slots for the given sales managers and date
+	// get all slots for the given sales managers and date
 	query := `
-        SELECT sales_manager_id, start_date, end_date, booked
-        FROM slots
-        WHERE sales_manager_id = ANY($1)
-        AND start_date::date = $2
-    `
+      SELECT sales_manager_id, start_date, end_date, booked
+      FROM slots
+      WHERE sales_manager_id = ANY($1)
+      AND start_date::date = $2
+  `
 	rows, err := db.Query(query, "{"+managerIDs+"}", req.Date)
 	if err != nil {
 		return nil, err
@@ -66,7 +57,6 @@ func FindAvailableSlots(db *sql.DB, req QueryRequest, managers []int) ([]Availab
 	// Map to track booked slots for each sales manager
 	bookedSlots := make(map[int][][2]time.Time)
 
-	// Parse the result set and build bookedSlots map
 	for rows.Next() {
 		var salesManagerID int
 		var startDate, endDate time.Time
@@ -83,12 +73,12 @@ func FindAvailableSlots(db *sql.DB, req QueryRequest, managers []int) ([]Availab
 
 	// Query again to find free slots (can optimize by combining with previous query)
 	freeSlotQuery := `
-        SELECT sales_manager_id, start_date
-        FROM slots
-        WHERE sales_manager_id = ANY($1)
-        AND start_date::date = $2
-        AND booked = FALSE
-    `
+      SELECT sales_manager_id, start_date
+      FROM slots
+      WHERE sales_manager_id = ANY($1)
+      AND start_date::date = $2
+      AND booked = FALSE
+  `
 	freeRows, err := db.Query(freeSlotQuery, "{"+managerIDs+"}", req.Date)
 	if err != nil {
 		return nil, err
