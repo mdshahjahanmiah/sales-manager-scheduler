@@ -38,12 +38,12 @@ func main() {
 	slog.Info("logger is initialized successfully")
 
 	c.Provide(func(conf config.Config, logger *logging.Logger) (*db.DB, error) {
-		db, err := db.NewDB(conf.PostgresDSN, logger)
+		database, err := db.NewDB(conf.PostgresDSN, logger)
 		if err != nil {
 			logger.Error("database initialization", "err", err.Error())
 			return nil, err
 		}
-		return db, nil
+		return database, nil
 	})
 
 	c.Provide(func(config config.Config) *eHttp.ServerConfig {
@@ -75,6 +75,10 @@ func main() {
 		c.Provide(func() di.StartCloser { return server }, dig.Group("startclose"))
 	})
 
-	c.Start()
+	err := c.Start()
+	if err != nil {
+		slog.Error("failed to start server", "err", err)
+		return
+	}
 
 }
