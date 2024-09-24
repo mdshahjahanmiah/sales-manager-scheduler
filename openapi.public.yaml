@@ -1,0 +1,103 @@
+openapi: 3.1.0
+info:
+  description: API documentation for the sales managers scheduler service
+  title: Sales Managers Scheduler API
+  version: 1.0.0
+paths:
+  /calender/query:
+    post:
+      description: Post a calender query
+      operationId: Calender
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: "#/components/schemas/query_request"
+        description: create funds operation
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/calenderQueryResponse"
+        "400":
+          $ref: "#/components/responses/errorResponse"
+        "500":
+          $ref: "#/components/responses/errorResponse"
+components:
+  responses:
+    errorResponse:
+      description: response with information about the error
+      content:
+        "*/*":
+          schema:
+            $ref: "#/components/schemas/errorPayload"
+    calenderQueryResponse:
+      description: Response with information available slots
+      content:
+        "*/*":
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/available_slots"
+  schemas:
+    query_request:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2024-05-03"
+        products:
+          type: array
+          items:
+            type: string
+            enum:
+              - SolarPanels
+              - Heatpumps
+              - Batteries
+          example: [ "SolarPanels", "Heatpumps" ]
+        language:
+          type: string
+          example: "German"
+        rating:
+          type: string
+          enum:
+            - Bronze
+            - Silver
+            - Gold
+          example: "Gold"
+    available_slots:
+      type: object
+      properties:
+        available_count:
+          type: integer
+          example: 1
+        start_date:
+          type: string
+          example: "2024-05-03T11:30:00.000Z"
+    fieldMessage:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        detail:
+          type: string
+        id:
+          type: string
+        source:
+          $ref: "#/components/schemas/fieldMessage"
+        status:
+          type: integer
+    errorPayload:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: "#/components/schemas/error"
+          type: array
