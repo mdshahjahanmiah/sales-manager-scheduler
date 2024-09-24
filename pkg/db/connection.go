@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/mdshahjahanmiah/explore-go/logging"
 	"github.com/pkg/errors"
+	"time"
 )
 
 type DB struct {
@@ -25,6 +26,8 @@ func NewDB(dsn string, logger *logging.Logger) (*DB, error) {
 	db.DB = d
 
 	db.DB.SetMaxOpenConns(10)
+	db.DB.SetMaxIdleConns(5)
+	db.DB.SetConnMaxLifetime(time.Minute * 5) // Prevent long-lived connections
 
 	db.logger = logger
 

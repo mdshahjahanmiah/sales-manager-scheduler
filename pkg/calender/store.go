@@ -1,15 +1,31 @@
 package calender
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
+	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/db"
 	"strings"
 	"time"
 )
 
-func matchingSalesManagers(db *sql.DB, req queryRequest) ([]int, error) {
+// Store defines the interface for matching sales managers and finding available slots.
+type Store interface {
+	MatchingSalesManagers(req queryRequest) ([]int, error)
+	AvailableSlots(req queryRequest, managers []int) ([]AvailableSlot, error)
+}
+
+// store holds the database connection and implements the Store interface.
+type store struct {
+	db *db.DB
+}
+
+// NewStore creates a new store instance with the provided database connection.
+func NewStore(db *db.DB) *store {
+	return &store{db: db}
+}
+
+func (s *store) MatchingSalesManagers(req queryRequest) ([]int, error) {
 	query := `
         SELECT id
         FROM sales_managers
@@ -17,7 +33,7 @@ func matchingSalesManagers(db *sql.DB, req queryRequest) ([]int, error) {
         AND products @> $2
         AND $3 = ANY(customer_ratings)
     `
-	rows, err := db.Query(query, req.Language, pq.Array(req.Products), req.Rating)
+	rows, err := s.db.DB.Query(query, req.Language, pq.Array(req.Products), req.Rating)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +51,7 @@ func matchingSalesManagers(db *sql.DB, req queryRequest) ([]int, error) {
 	return managerIDs, nil
 }
 
-func availableSlots(db *sql.DB, req queryRequest, managers []int) ([]AvailableSlot, error) {
+func (s *store) AvailableSlots(req queryRequest, managers []int) ([]AvailableSlot, error) {
 	managerIDs := strings.Trim(strings.Replace(fmt.Sprint(managers), " ", ",", -1), "[]")
 
 	// get all slots for the given sales managers and date
@@ -45,7 +61,7 @@ func availableSlots(db *sql.DB, req queryRequest, managers []int) ([]AvailableSl
       WHERE sales_manager_id = ANY($1)
       AND start_date::date = $2
   `
-	rows, err := db.Query(query, "{"+managerIDs+"}", req.Date)
+	rows, err := s.db.DB.Query(query, "{"+managerIDs+"}", req.Date)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +95,7 @@ func availableSlots(db *sql.DB, req queryRequest, managers []int) ([]AvailableSl
       AND start_date::date = $2
       AND booked = FALSE
   `
-	freeRows, err := db.Query(freeSlotQuery, "{"+managerIDs+"}", req.Date)
+	freeRows, err := s.db.DB.Query(freeSlotQuery, "{"+managerIDs+"}", req.Date)
 	if err != nil {
 		return nil, err
 	}

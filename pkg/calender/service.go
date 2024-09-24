@@ -21,20 +21,21 @@ type AvailableSlot struct {
 type service struct {
 	config config.Config
 	logger *logging.Logger
-	db     *db.DB
+	store  *store
 }
 
+// NewService creates a new service instance
 func NewService(config config.Config, logger *logging.Logger, database *db.DB) (Service, error) {
 	return &service{
 		config: config,
 		logger: logger,
-		db:     database,
+		store:  NewStore(database),
 	}, nil
 }
 
 func (s service) AvailableSlots(request queryRequest) ([]AvailableSlot, error) {
 	// get matching sales managers
-	managers, err := matchingSalesManagers(s.db.DB, request)
+	managers, err := s.store.MatchingSalesManagers(request)
 	if err != nil {
 		s.logger.Error("error matching sales managers", "err", err.Error())
 		return []AvailableSlot{}, eError.NewTransportError(errors.New("please try again later"), "internal_server_error")
@@ -46,7 +47,7 @@ func (s service) AvailableSlots(request queryRequest) ([]AvailableSlot, error) {
 	}
 
 	// get available slots by matching sales managers
-	availableSlots, err := availableSlots(s.db.DB, request, managers)
+	availableSlots, err := s.store.AvailableSlots(request, managers)
 	if err != nil {
 		s.logger.Error("error getting available slots by sales managers", "err", err.Error())
 		return []AvailableSlot{}, eError.NewTransportError(errors.New("please try again later"), "internal_server_error")
