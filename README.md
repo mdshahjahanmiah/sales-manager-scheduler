@@ -43,6 +43,10 @@ enpal-coding-challenge-app  | 2024/09/24 15:15:33 INFO http server is started su
    ```
 ## Setup and Tests
 To test the implementation, a test application as provided is included in the project directory. Ensure Node.js is installed.
+Navigate to the project root, locate the tests folder, and enter it -
+   ```sh
+cd sales-manager-scheduler/tests
+   ```
 
 #### Install dependencies:
    ```sh
