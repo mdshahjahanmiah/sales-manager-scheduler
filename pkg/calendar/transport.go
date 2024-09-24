@@ -1,4 +1,4 @@
-package calender
+package calendar
 
 import (
 	"github.com/go-chi/chi/v5"

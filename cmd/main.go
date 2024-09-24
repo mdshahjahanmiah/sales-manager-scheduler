@@ -4,7 +4,7 @@ import (
 	"github.com/mdshahjahanmiah/explore-go/di"
 	eHttp "github.com/mdshahjahanmiah/explore-go/http"
 	"github.com/mdshahjahanmiah/explore-go/logging"
-	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/calender"
+	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/calendar"
 	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/config"
 	"github.com/mdshahjahanmiah/sales-manager-scheduler/pkg/db"
 	"go.uber.org/dig"
@@ -52,10 +52,10 @@ func main() {
 		}
 	})
 
-	c.Provide(func(config config.Config, logger *logging.Logger, db *db.DB) (calender.Service, error) {
-		service, err := calender.NewService(config, logger, db)
+	c.Provide(func(config config.Config, logger *logging.Logger, db *db.DB) (calendar.Service, error) {
+		service, err := calendar.NewService(config, logger, db)
 		if err != nil {
-			slog.Error("initializing calender service", "err", err)
+			slog.Error("initializing calendar service", "err", err)
 			return nil, err
 		}
 		return service, nil
@@ -63,7 +63,7 @@ func main() {
 
 	c.ProvideMonitoringEndpoints("endpoint")
 
-	c.Provide(calender.MakeHandler, dig.Group("endpoint"))
+	c.Provide(calendar.MakeHandler, dig.Group("endpoint"))
 
 	c.Invoke(func(in struct {
 		dig.In

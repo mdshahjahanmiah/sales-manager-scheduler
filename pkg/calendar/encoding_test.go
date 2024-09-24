@@ -1,4 +1,4 @@
-package calender
+package calendar
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ func TestDecodeCalenderQuery_Success(t *testing.T) {
 		"language": "German",
 		"rating": "Gold"
 	}`
-	req := httptest.NewRequest(http.MethodPost, "/calender/query", bytes.NewBufferString(body))
+	req := httptest.NewRequest(http.MethodPost, "/calendar/query", bytes.NewBufferString(body))
 	result, err := decodeCalenderQuery(context.Background(), req)
 
 	// Check if the function returned an error when it shouldn't have
@@ -45,7 +45,7 @@ func TestDecodeCalenderQuery_Fail(t *testing.T) {
 		"rating": "Gold"
 	}`
 
-	req := httptest.NewRequest(http.MethodPost, "/calender/query", bytes.NewBufferString(body))
+	req := httptest.NewRequest(http.MethodPost, "/calendar/query", bytes.NewBufferString(body))
 	result, err := decodeCalenderQuery(context.Background(), req)
 
 	// Check if the function returned an error when it should have
