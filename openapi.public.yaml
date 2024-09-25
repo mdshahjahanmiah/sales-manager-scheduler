@@ -13,7 +13,7 @@ paths:
           application/json:
             schema:
                 $ref: "#/components/schemas/query_request"
-        description: create funds operation
+        description: query calendar operation
         required: true
       responses:
         "200":
