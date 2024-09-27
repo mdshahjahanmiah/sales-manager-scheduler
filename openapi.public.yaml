@@ -13,7 +13,7 @@ paths:
           application/json:
             schema:
                 $ref: "#/components/schemas/query_request"
-        description: query calendar operation
+        description: post a calendar query operation
         required: true
       responses:
         "200":
