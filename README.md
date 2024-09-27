@@ -7,7 +7,6 @@ A tool for efficiently managing and scheduling sales team activities and appoint
 - [Setup and Tests](#setup-and-tests)
 - [Features](#features)
 - [Further Improvements](#further-improvements)
-- [Further Improvements](#further-improvements)
 
 ## Prerequisites
 
