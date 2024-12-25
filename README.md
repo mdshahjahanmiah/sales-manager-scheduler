@@ -30,14 +30,14 @@ Navigate to the project root where the docker-compose.yml file is located.
 If the build is successful, you will see logs similar to:
    ```sh
 [+] Running 2/0
- ✔ Container enpal-coding-challenge-db      Created                                                                                                                                                                                                                            0.0s 
- ✔ Container enpal-coding-challenge-app     Created                                                                                                                                                                                                                          0.1s 
-Attaching to enpal-coding-challenge-app, enpal-coding-challenge-db
-enpal-coding-challenge-db   | 2024-09-24 15:15:33.501 UTC [1] LOG:  database system is ready to accept connections
-enpal-coding-challenge-app  | 2024/09/24 15:15:33 INFO configuration is loaded successfully
-enpal-coding-challenge-app  | 2024/09/24 15:15:33 INFO logger is initialized successfully
-enpal-coding-challenge-app  | 2024/09/24 15:15:33 INFO di container is starting up
-enpal-coding-challenge-app  | 2024/09/24 15:15:33 INFO http server is started successfully addr=0.0.0.0:3000
+ ✔ Container db      Created                                                                                                                                                                                                                            0.0s 
+ ✔ Container app     Created                                                                                                                                                                                                                          0.1s 
+Attaching to app, db
+db   | 2024-09-24 15:15:33.501 UTC [1] LOG:  database system is ready to accept connections
+app  | 2024/09/24 15:15:33 INFO configuration is loaded successfully
+app  | 2024/09/24 15:15:33 INFO logger is initialized successfully
+app  | 2024/09/24 15:15:33 INFO di container is starting up
+app  | 2024/09/24 15:15:33 INFO http server is started successfully addr=0.0.0.0:3000
 
    ```
 ## Setup and Tests
